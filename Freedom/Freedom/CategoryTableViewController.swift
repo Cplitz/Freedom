@@ -47,6 +47,29 @@ class CategoryTableViewController: UITableViewController {
         }
     }
     
+    @IBAction func editCategory(_ sender: UIButton) {
+        let indexPath = IndexPath(row: sender.tag, section: 0)
+        let cell = tableView.cellForRow(at: indexPath)
+    }
+    
+    @IBAction func presentDeleteAlert(_ sender: UIButton) {
+        // Create confirmation alert
+        let alert = UIAlertController(title: "Delete Category", message: "Are you sure you want to delete this category? All contained Freevents will also be deleted.", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel deletion"), style: .cancel
+        ))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Confirm Deletion"), style: .default, handler: { _ in self.deleteCategory(button: sender)
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+        
+    }
+    func deleteCategory(button: UIButton) {
+
+        let indexPath = IndexPath(row: button.tag, section: 0)
+        Categories.categories.remove(at: button.tag)
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+        tableView.reloadData()
+    }
     
     // MARK: - Table view data source
 
@@ -66,13 +89,15 @@ class CategoryTableViewController: UITableViewController {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as? CategoryTableViewCell else {
             fatalError("The dequeued cell is not an instance of CategoryTableViewCell")
         }
-
+        
         let category = Categories.getCategory(at: indexPath.row)
         
         // Configure the cell...
         cell.nameLabel.text = category?.catName
         cell.photoImageView.image = (category?.catImg)!
         cell.upcomingLabel.text = "\((category?.numUpcoming)!)\nUpcoming"
+        cell.editButton.tag = indexPath.row
+        cell.deleteButton.tag = indexPath.row
         
         return cell
     }

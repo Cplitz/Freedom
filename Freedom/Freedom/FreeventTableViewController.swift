@@ -29,6 +29,25 @@ class FreeventTableViewController: UITableViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    //MARK: - Actions
+    @IBAction func presentDeleteAlert(_ sender: UIButton) {
+        // Create confirmation alert
+        let alert = UIAlertController(title: "Delete Category", message: "Are you sure you want to delete this Freevent?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel deletion"), style: .cancel
+        ))
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Confirm Deletion"), style: .default, handler: { _ in self.deleteFreevent(button: sender)
+        }))
+        
+        self.present(alert, animated: true, completion: nil)
+        
+    }
+    func deleteFreevent(button: UIButton) {
+        let indexPath = IndexPath(row: button.tag, section: 0)
+        category?.freevents.remove(at: button.tag)
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+        tableView.reloadData()
+    }
 
     // MARK: - Table view data source
 
@@ -51,6 +70,7 @@ class FreeventTableViewController: UITableViewController {
         // Configure the cell...
         cell.nameLabel.text = freevent!.freeName
         cell.photoImageView.image = freevent!.freeImg
+        cell.deleteButton.tag = indexPath.row
         
         return cell
     }
