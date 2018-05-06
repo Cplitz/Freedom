@@ -18,6 +18,7 @@ class FreeventTableViewController: UITableViewController {
 
         category?.loadFreevents()
         navigationItem.title = "\((category!.catName)!) Freevents"
+        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "Azedo-Bold", size: 23)!]
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
 

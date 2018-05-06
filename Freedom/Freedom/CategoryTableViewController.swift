@@ -11,7 +11,6 @@ import UIKit
 class CategoryTableViewController: UITableViewController {
 
     //MARK: Properties
-    var category : Category?
     var rowSelected : Int = 0
     
     
@@ -54,7 +53,7 @@ class CategoryTableViewController: UITableViewController {
     
     @IBAction func presentDeleteAlert(_ sender: UIButton) {
         // Create confirmation alert
-        let alert = UIAlertController(title: "Delete Category", message: "Are you sure you want to delete this category? All contained Freevents will also be deleted.", preferredStyle: .alert)
+        let alert = UIAlertController(title: "Delete Category", message: "Are you sure you want to delete this category?\nAll contained Freevents will also be deleted.", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel deletion"), style: .cancel
         ))
         alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Confirm Deletion"), style: .default, handler: { _ in self.deleteCategory(button: sender)

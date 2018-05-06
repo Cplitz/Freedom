@@ -22,6 +22,7 @@ class NewFreeventViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "Azedo-Bold", size: 23)!]
         // Do any additional setup after loading the view.
     }
 
@@ -30,6 +31,10 @@ class NewFreeventViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    //MARK: - Actions
+    @IBAction func cancelPressed(_ sender: UIBarButtonItem) {
+        dismiss(animated: true, completion: nil)
+    }
 
     // MARK: Navigation
     

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7B2D36C1209EB17B004A51FE /* Azedo-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7B2D36C0209EB148004A51FE /* Azedo-Bold.otf */; };
+		7B2D36C3209F2B1E004A51FE /* NewItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2D36C2209F2B1E004A51FE /* NewItemViewController.swift */; };
 		7B89BAC4209C0C73001B8A59 /* FreeventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAC3209C0C73001B8A59 /* FreeventTableViewController.swift */; };
 		7B89BAC6209C1368001B8A59 /* FreeventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAC5209C1368001B8A59 /* FreeventTableViewCell.swift */; };
 		7B89BAC8209C13C2001B8A59 /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAC7209C13C2001B8A59 /* CategoryTableViewCell.swift */; };
@@ -43,6 +44,7 @@
 
 /* Begin PBXFileReference section */
 		7B2D36C0209EB148004A51FE /* Azedo-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Azedo-Bold.otf"; path = "../Freedom.xcodeproj/Azedo-Bold.otf"; sourceTree = "<group>"; };
+		7B2D36C2209F2B1E004A51FE /* NewItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewItemViewController.swift; path = "/Users/user137759/Desktop/Xcode apps/Freedom/Freedom/Freedom/NewItemViewController.swift"; sourceTree = "<absolute>"; };
 		7B89BAC3209C0C73001B8A59 /* FreeventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeventTableViewController.swift; sourceTree = "<group>"; };
 		7B89BAC5209C1368001B8A59 /* FreeventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeventTableViewCell.swift; sourceTree = "<group>"; };
 		7B89BAC7209C13C2001B8A59 /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 				7B89BACF209C22BA001B8A59 /* Category.swift */,
 				7B89BAC9209C1CC6001B8A59 /* CategoryTableViewController.swift */,
 				7B89BAC7209C13C2001B8A59 /* CategoryTableViewCell.swift */,
+				7B2D36C2209F2B1E004A51FE /* NewItemViewController.swift */,
 				7B89BAD1209C3E8E001B8A59 /* NewFreeventViewController.swift */,
 				7B89BAD3209C3E9C001B8A59 /* NewCategoryViewController.swift */,
 				7BAA542620885016005DDEC0 /* Main.storyboard */,
@@ -283,6 +286,7 @@
 			files = (
 				7BAA542320885016005DDEC0 /* AppDelegate.swift in Sources */,
 				7B89BAD4209C3E9C001B8A59 /* NewCategoryViewController.swift in Sources */,
+				7B2D36C3209F2B1E004A51FE /* NewItemViewController.swift in Sources */,
 				7B8B41232094228D001A2342 /* Freevent.swift in Sources */,
 				7B89BAD2209C3E8E001B8A59 /* NewFreeventViewController.swift in Sources */,
 				7B89BAC6209C1368001B8A59 /* FreeventTableViewCell.swift in Sources */,

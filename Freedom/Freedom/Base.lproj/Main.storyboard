@@ -211,7 +211,7 @@ Upcoming</string>
         <!--New Item-->
         <scene sceneID="HCW-4Z-mwx">
             <objects>
-                <viewController id="Y1s-lw-gvq" sceneMemberID="viewController">
+                <viewController id="Y1s-lw-gvq" customClass="NewItemViewController" customModule="Freedom" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Z2u-lM-DPC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -239,7 +239,11 @@ Upcoming</string>
                         <viewLayoutGuide key="safeArea" id="bsx-lR-5TA"/>
                     </view>
                     <navigationItem key="navigationItem" title="New Item" id="JSU-rk-GeY">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="Tsn-ui-tHs"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="Tsn-ui-tHs">
+                            <connections>
+                                <action selector="cancelPressed:" destination="Y1s-lw-gvq" id="vTh-B6-Kg1"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="y9Y-aO-J7T" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -288,7 +292,11 @@ Upcoming</string>
                         <viewLayoutGuide key="safeArea" id="zd5-CH-Q8W"/>
                     </view>
                     <navigationItem key="navigationItem" title="New Category" id="eM6-sa-vvK">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="ENs-6X-w7K"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="ENs-6X-w7K">
+                            <connections>
+                                <action selector="cancelPressed:" destination="NYk-X0-wW9" id="phE-Ff-kEK"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" tag="1" systemItem="save" id="cv4-OI-MHH">
                             <connections>
                                 <segue destination="DYT-GE-rgM" kind="unwind" unwindAction="unwindToCategoryListWithSender:" id="im2-jl-eZh"/>
@@ -381,7 +389,11 @@ Upcoming</string>
                         <viewLayoutGuide key="safeArea" id="uJW-cI-kVG"/>
                     </view>
                     <navigationItem key="navigationItem" title="New Freevent" id="ZKw-wI-JjQ">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="9uV-Jx-pqk"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="9uV-Jx-pqk">
+                            <connections>
+                                <action selector="cancelPressed:" destination="EQT-1C-rdh" id="yW8-Nm-U9c"/>
+                            </connections>
+                        </barButtonItem>
                         <barButtonItem key="rightBarButtonItem" systemItem="save" id="C1F-7u-vXa">
                             <connections>
                                 <segue destination="Tbm-nf-ffy" kind="unwind" unwindAction="unwindToCategoryListWithSender:" id="3zE-td-ogx"/>

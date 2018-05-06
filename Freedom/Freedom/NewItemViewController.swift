@@ -1,20 +1,14 @@
 //
-//  NewCategoryViewController.swift
-//  Freedom
+//  NewItemViewController.swift
+//  
 //
-//  Created by user137759 on 5/4/18.
-//  Copyright © 2018 user137759. All rights reserved.
+//  Created by user137759 on 5/6/18.
 //
 
 import UIKit
 
-class NewCategoryViewController: UIViewController {
+class NewItemViewController: UIViewController {
 
-    //MARK: Properties
-    @IBOutlet weak var nameTextField: UITextField!
-    
-    var category : Category?
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -33,16 +27,14 @@ class NewCategoryViewController: UIViewController {
     }
     
 
+    /*
     // MARK: - Navigation
 
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let button = sender as? UIBarButtonItem
-        
-        let name = nameTextField.text ?? ""
-        let nUpcoming : UInt32 = 3
-        
-        category = Category(name, nUpcoming)
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
     }
-    
-    
+    */
+
 }
