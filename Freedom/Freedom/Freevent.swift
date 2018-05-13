@@ -15,8 +15,6 @@ import CoreData
 
 class Freevent : NSObject {
     var freeName : String?
-    var freeEditButton : UIButton?
-    var freeDelButton : UIButton?
     var freeImg: UIImage?
     var freeNotes : String?
     var freeEndDate : Date?

@@ -11,7 +11,8 @@ import UIKit
 class FreeventTableViewController: UITableViewController {
 
     //MARK: Properties
-    var category: Category?
+    var category: Category!
+    var rowSelected : Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,6 +33,13 @@ class FreeventTableViewController: UITableViewController {
     }
     
     //MARK: - Actions
+
+    
+    @IBAction func editFreevemt(_ sender: UIButton) {
+        rowSelected = sender.tag
+        performSegue(withIdentifier: "editFreeventSegue", sender: self)
+    }
+    
     @IBAction func presentDeleteAlert(_ sender: UIButton) {
         // Create confirmation alert
         let alert = UIAlertController(title: "Delete Category", message: "Are you sure you want to delete this Freevent?", preferredStyle: .alert)
@@ -44,6 +52,15 @@ class FreeventTableViewController: UITableViewController {
         
     }
     func deleteFreevent(button: UIButton) {
+        if category == Categories.upcoming {
+            for cat in Categories.categories {
+                for f in cat.freevents {
+                    if f == category!.freevents[button.tag] {
+                        cat.freevents.remove(at: cat.freevents.index(of: f)!)
+                    }
+                }
+            }
+        }
         let indexPath = IndexPath(row: button.tag, section: 0)
         category?.freevents.remove(at: button.tag)
         tableView.deleteRows(at: [indexPath], with: .automatic)
@@ -69,9 +86,19 @@ class FreeventTableViewController: UITableViewController {
         
         let freevent = category?.getFreevent(at: indexPath.row)
         // Configure the cell...
+        cell.selectionStyle = .none
         cell.nameLabel.text = freevent!.freeName
         cell.photoImageView.image = freevent!.freeImg
+        cell.editButton.tag = indexPath.row
         cell.deleteButton.tag = indexPath.row
+        
+        let timeToEnd : TimeInterval = freevent!.freeEndDate!.timeIntervalSinceNow
+        let timeToReminder : TimeInterval = freevent!.freeReminderDate!.timeIntervalSinceNow
+        if timeToReminder < 0 {
+            cell.timeLeftLabel.textColor = UIColor.red
+        }
+        
+        cell.timeLeftLabel.text = "\(timeToEnd)s"
         
         return cell
     }
@@ -111,14 +138,17 @@ class FreeventTableViewController: UITableViewController {
     }
     */
 
-    /*
+
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if let vc = segue.destination as? UINavigationController {
+            if let newFreeventVC = vc.viewControllers[0] as? NewFreeventTableViewController {
+                newFreeventVC.freevent = category!.freevents[rowSelected]
+            }
+        }
+        
     }
-    */
+
 
 }

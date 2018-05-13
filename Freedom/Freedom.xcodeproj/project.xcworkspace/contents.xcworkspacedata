@@ -2,12 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/user137759/Desktop/Xcode apps/Freedom/Freedom/Freedom/NewItemViewController.swift">
-   </FileRef>
-   <FileRef
-      location = "group:Azedo-Bold.otf">
-   </FileRef>
-   <FileRef
       location = "self:Freedom.xcodeproj">
    </FileRef>
 </Workspace>

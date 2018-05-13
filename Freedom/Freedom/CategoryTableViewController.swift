@@ -25,6 +25,10 @@ class CategoryTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        tableView.reloadData()
+    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -32,17 +36,32 @@ class CategoryTableViewController: UITableViewController {
     }
 
     //MARK: - Actions
+    
     @IBAction func unwindToCategoryList(sender: UIStoryboardSegue)
     {
-        if let sourceViewController = sender.source as? NewCategoryViewController, let category = sourceViewController.category {
-            let newIndexPath = IndexPath(row: Categories.categories.count, section: 0)
+        if let sourceViewController = sender.source as? NewCategoryTableViewController, let category = sourceViewController.category {
+            if let cat = Categories.getCategory(named: "Uncategorized") {
+                Categories.categories.insert(category, at: Categories.categories.index(of: cat)!)
+            }
+            else {
             Categories.categories.append(category)
+                
+            }
+            let newIndexPath = IndexPath(row: Categories.categories.index(of: category)!, section: 0)
+            
             tableView.insertRows(at: [newIndexPath], with: .automatic)
         }
-        else if let sourceViewController = sender.source as? NewFreeventViewController, let freevent = sourceViewController.freevent {
-            let newIndexPath = IndexPath(row: 3, section: 0)
-            let category = sourceViewController.category
-            category?.freevents.append(freevent)
+        else if let sourceViewController = sender.source as? NewFreeventTableViewController, let freevent = sourceViewController.freevent {
+            
+            if sourceViewController.editMode == false {
+                let category = sourceViewController.category
+                category?.addFreevent(freevent)
+                if tableView.numberOfRows(inSection: 0) < Categories.categories.count {
+                    let newIndexPath = IndexPath(row: Categories.categories.index(of: category!)!, section: 0)
+                    tableView.insertRows(at: [newIndexPath], with: .automatic)
+                }
+            }
+            
         }
     }
     
@@ -78,7 +97,6 @@ class CategoryTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        print(Categories.categories.count)
         return Categories.categories.count
     }
 
@@ -92,9 +110,14 @@ class CategoryTableViewController: UITableViewController {
         let category = Categories.getCategory(at: indexPath.row)
         
         // Configure the cell...
-        cell.nameLabel.text = category?.catName
-        cell.photoImageView.image = (category?.catImg)!
-        cell.upcomingLabel.text = "\((category?.numUpcoming)!)\nUpcoming"
+        cell.selectionStyle = .none
+        cell.nameLabel.text = category!.catName
+        cell.photoImageView.image = category!.catImg
+        let nUpcoming : Int = category!.calculateUpcoming()
+        if nUpcoming > 0 { cell.upcomingLabel.textColor = UIColor.red }
+        else { cell.upcomingLabel.textColor = UIColor.black }
+        
+        cell.upcomingLabel.text = "\(nUpcoming)\nUpcoming"
         cell.editButton.tag = indexPath.row
         cell.deleteButton.tag = indexPath.row
         
@@ -147,6 +170,10 @@ class CategoryTableViewController: UITableViewController {
         if segue.identifier == "selectCategory" {
             let vc = segue.destination as! FreeventTableViewController
             vc.category = Categories.getCategory(at: rowSelected)
+        }
+        else if segue.identifier == "upcomingCategory" {
+            let vc = segue.destination as! FreeventTableViewController
+            vc.category = Categories.upcoming
         }
     }
 

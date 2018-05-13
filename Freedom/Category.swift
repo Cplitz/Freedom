@@ -11,17 +11,15 @@ import UIKit
 
 class Category : NSObject {
     var catName : String?
-    var numUpcoming : UInt32?
+    var numUpcoming : Int
     //var catEditButton : UIButton?
     //var catDelButton : UIButton?
     var catImg: UIImage?
     var freevents = [Freevent]()
     
-    init(_ name : String,_ upcoming : UInt32,/*_ editButton : UIButton,_ delButton : UIButton,*/_ img : UIImage? = nil) {
+    init(_ name : String,_ img : UIImage? = nil) {
         catName = name
-        numUpcoming = upcoming
-        //catEditButton = editButton
-        //catDelButton = delButton
+        numUpcoming = 0
         
         if img == nil {
             catImg = UIImage(named: "defaultCategoryImg")
@@ -33,14 +31,59 @@ class Category : NSObject {
         super.init()
     }
     
+    func calculateUpcoming() -> Int {
+        numUpcoming = 0
+        Categories.upcoming.freevents = []
+        for f in freevents {
+            let diff : TimeInterval = f.freeReminderDate!.timeIntervalSinceNow
+            if diff < 0 {
+                numUpcoming += 1
+                
+                var match = false
+                for uFreevent in Categories.upcoming.freevents {
+                    if uFreevent == f {
+                        match = true
+                        break
+                    }
+                }
+                
+                if !match { Categories.upcoming.addFreevent(f) }
+            }
+        }
+        return numUpcoming
+    }
     
     func getFreevents() -> [Freevent] {
         if freevents.count == 0 { loadFreevents() }
         return freevents
     }
     
-    func addFreevent(_ name : String,_ editButton : UIButton,_ delButton : UIButton,_ img : UIImage,_ notes : String,_ endDate : Date,_ reminderDate : Date,_ category : Category? = nil) {
-        
+    private func swapFreevents(_ idx1 : Int,_ idx2 : Int) {
+        let temp = freevents[idx1]
+        freevents[idx1] = freevents[idx2]
+        freevents[idx2] = temp
+    }
+    
+    func orderByDate() {
+        if freevents.count <= 1 {
+            return
+        }
+        for _ in 0...freevents.count - 1
+        {
+            for j in 0...freevents.count - 2
+            {
+                let diff : TimeInterval = (freevents[j].freeEndDate?.timeIntervalSince(freevents[j + 1].freeEndDate!))!
+                if (diff > 0)
+                {
+                    swapFreevents(j, j + 1);
+                }
+            }
+        }
+    }
+    
+    func addFreevent(_ freevent : Freevent) {
+        freevents.append(freevent)
+        orderByDate()
     }
     
     func getFreevent(at : Int) -> Freevent? {
@@ -51,6 +94,7 @@ class Category : NSObject {
         }
         return nil
     }
+    
     func loadFreevents() {
         if freevents.count == 0 {
             
@@ -70,13 +114,14 @@ class Category : NSObject {
 
 class Categories {
     static var categories = [Category]()
+    static var upcoming : Category = Category("Upcoming")
     
     static func getCategories() -> [Category] {
         if categories.count == 0 { loadCategories() }
         return categories
     }
     
-    static func addCategory(_ name : String,_ upcoming : UInt32,_ editButton : UIButton,_ delButton : UIButton,_ img : UIImage? = nil) {
+    static func addCategory(_ category : Category) {
         
     }
     
@@ -88,20 +133,30 @@ class Categories {
         }
         return nil
     }
+    
+    static func getCategory(named: String) -> Category? {
+        for cat in categories {
+            if cat.catName == named {
+                return cat
+            }
+        }
+        return nil
+    }
+    
     static func loadCategories() {
         if categories.count == 0 {
             
             //Add a trip to Melbourne
-            categories.append ( Category("Testing", 2, UIImage(named: "freevent1")!) )
+            categories.append ( Category("Testing", UIImage(named: "freevent1")!) )
             
-            categories.append ( Category("Testing1", 2, UIImage(named: "freevent2")!) )
+            categories.append ( Category("Testing1", UIImage(named: "freevent2")!) )
             
-            categories.append ( Category("Testing2", 2, UIImage(named: "freevent3")!) )
-            
-            categories.append ( Category("Uncategorized", 0) )
+            categories.append ( Category("Testing2", UIImage(named: "freevent3")!) )
             
         }
         
     }
 }
+
+
 

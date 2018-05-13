@@ -14,15 +14,17 @@
 		7B89BAC8209C13C2001B8A59 /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAC7209C13C2001B8A59 /* CategoryTableViewCell.swift */; };
 		7B89BACA209C1CC6001B8A59 /* CategoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAC9209C1CC6001B8A59 /* CategoryTableViewController.swift */; };
 		7B89BAD0209C22BA001B8A59 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BACF209C22BA001B8A59 /* Category.swift */; };
-		7B89BAD2209C3E8E001B8A59 /* NewFreeventViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAD1209C3E8E001B8A59 /* NewFreeventViewController.swift */; };
-		7B89BAD4209C3E9C001B8A59 /* NewCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAD3209C3E9C001B8A59 /* NewCategoryViewController.swift */; };
 		7B8B41232094228D001A2342 /* Freevent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8B41222094228D001A2342 /* Freevent.swift */; };
+		7B93539720A162B000071264 /* ChooseCategoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B93539620A162B000071264 /* ChooseCategoryTableViewController.swift */; };
 		7BAA542320885016005DDEC0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAA542220885016005DDEC0 /* AppDelegate.swift */; };
 		7BAA542820885016005DDEC0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7BAA542620885016005DDEC0 /* Main.storyboard */; };
 		7BAA542A20885017005DDEC0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7BAA542920885017005DDEC0 /* Assets.xcassets */; };
 		7BAA542D20885017005DDEC0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7BAA542B20885017005DDEC0 /* LaunchScreen.storyboard */; };
 		7BAA543820885017005DDEC0 /* FreedomTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAA543720885017005DDEC0 /* FreedomTests.swift */; };
 		7BAA544320885017005DDEC0 /* FreedomUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAA544220885017005DDEC0 /* FreedomUITests.swift */; };
+		7BCAEB2120A689E500AE136F /* DatePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCAEB2020A689E500AE136F /* DatePickerViewController.swift */; };
+		7BDDA92020A024A400B19665 /* NewFreeventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BDDA91F20A024A400B19665 /* NewFreeventTableViewController.swift */; };
+		7BDDA92220A024CC00B19665 /* NewCategoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BDDA92120A024CC00B19665 /* NewCategoryTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,9 +52,8 @@
 		7B89BAC7209C13C2001B8A59 /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
 		7B89BAC9209C1CC6001B8A59 /* CategoryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewController.swift; sourceTree = "<group>"; };
 		7B89BACF209C22BA001B8A59 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Category.swift; path = ../Category.swift; sourceTree = "<group>"; };
-		7B89BAD1209C3E8E001B8A59 /* NewFreeventViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFreeventViewController.swift; sourceTree = "<group>"; };
-		7B89BAD3209C3E9C001B8A59 /* NewCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryViewController.swift; sourceTree = "<group>"; };
 		7B8B41222094228D001A2342 /* Freevent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Freevent.swift; sourceTree = "<group>"; };
+		7B93539620A162B000071264 /* ChooseCategoryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCategoryTableViewController.swift; sourceTree = "<group>"; };
 		7BAA541F20885016005DDEC0 /* Freedom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Freedom.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BAA542220885016005DDEC0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7BAA542720885016005DDEC0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -65,6 +66,9 @@
 		7BAA543E20885017005DDEC0 /* FreedomUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FreedomUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BAA544220885017005DDEC0 /* FreedomUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreedomUITests.swift; sourceTree = "<group>"; };
 		7BAA544420885017005DDEC0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7BCAEB2020A689E500AE136F /* DatePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerViewController.swift; sourceTree = "<group>"; };
+		7BDDA91F20A024A400B19665 /* NewFreeventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFreeventTableViewController.swift; sourceTree = "<group>"; };
+		7BDDA92120A024CC00B19665 /* NewCategoryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewCategoryTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,9 +128,11 @@
 				7B89BAC9209C1CC6001B8A59 /* CategoryTableViewController.swift */,
 				7B89BAC7209C13C2001B8A59 /* CategoryTableViewCell.swift */,
 				7B2D36C2209F2B1E004A51FE /* NewItemViewController.swift */,
-				7B89BAD1209C3E8E001B8A59 /* NewFreeventViewController.swift */,
-				7B89BAD3209C3E9C001B8A59 /* NewCategoryViewController.swift */,
+				7BDDA91F20A024A400B19665 /* NewFreeventTableViewController.swift */,
+				7BDDA92120A024CC00B19665 /* NewCategoryTableViewController.swift */,
 				7BAA542620885016005DDEC0 /* Main.storyboard */,
+				7BCAEB2020A689E500AE136F /* DatePickerViewController.swift */,
+				7B93539620A162B000071264 /* ChooseCategoryTableViewController.swift */,
 				7BAA542920885017005DDEC0 /* Assets.xcassets */,
 				7BAA542B20885017005DDEC0 /* LaunchScreen.storyboard */,
 				7BAA542E20885017005DDEC0 /* Info.plist */,
@@ -284,15 +290,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B93539720A162B000071264 /* ChooseCategoryTableViewController.swift in Sources */,
 				7BAA542320885016005DDEC0 /* AppDelegate.swift in Sources */,
-				7B89BAD4209C3E9C001B8A59 /* NewCategoryViewController.swift in Sources */,
+				7BCAEB2120A689E500AE136F /* DatePickerViewController.swift in Sources */,
 				7B2D36C3209F2B1E004A51FE /* NewItemViewController.swift in Sources */,
+				7BDDA92020A024A400B19665 /* NewFreeventTableViewController.swift in Sources */,
 				7B8B41232094228D001A2342 /* Freevent.swift in Sources */,
-				7B89BAD2209C3E8E001B8A59 /* NewFreeventViewController.swift in Sources */,
 				7B89BAC6209C1368001B8A59 /* FreeventTableViewCell.swift in Sources */,
 				7B89BAC4209C0C73001B8A59 /* FreeventTableViewController.swift in Sources */,
 				7B89BAC8209C13C2001B8A59 /* CategoryTableViewCell.swift in Sources */,
 				7B89BACA209C1CC6001B8A59 /* CategoryTableViewController.swift in Sources */,
+				7BDDA92220A024CC00B19665 /* NewCategoryTableViewController.swift in Sources */,
 				7B89BAD0209C22BA001B8A59 /* Category.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
