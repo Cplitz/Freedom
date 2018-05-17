@@ -47,12 +47,7 @@ class CategoryTableViewController: UITableViewController {
             if sourceViewController.editMode == false {
                 
                 // Adds the new category at the correct index - Uncategorized must always be the last in the list
-                if let cat = Categories.getCategory(named: "Uncategorized") {
-                    Categories.addCategory(cat, at: Categories.categories.index(of: cat)!)
-                }
-                else {
-                    Categories.addCategory(category)
-                }
+                Categories.addCategory(category)
                 
                 // Get the new index path
                 let newIndexPath = IndexPath(row: Categories.categories.index(of: category)!, section: 0)

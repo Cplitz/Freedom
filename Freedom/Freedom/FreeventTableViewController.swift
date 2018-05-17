@@ -25,6 +25,7 @@ class FreeventTableViewController: UITableViewController {
         // Set the navigation title
         navigationItem.title = "\(category!.catName) Freevents"
         self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "Azedo-Bold", size: 23)!]
+        
     }
     
     //MARK: - Actions
@@ -42,11 +43,9 @@ class FreeventTableViewController: UITableViewController {
     // Deletes a freevent and asks for confirmation first
     @IBAction func presentDeleteAlert(_ sender: UIButton) {
         // Create confirmation alert
-        let alert = UIAlertController(title: "Delete Category", message: "Are you sure you want to delete this Freevent?", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel deletion"), style: .cancel
-        ))
-        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Confirm Deletion"), style: .default, handler: { _ in self.deleteFreevent(button: sender)
-        }))
+        let alert = UIAlertController(title: "Delete Freevent", message: "Are you sure you want to delete this Freevent?", preferredStyle: .alert)
+        alert.addAction( UIAlertAction(title: NSLocalizedString("Cancel", comment: "Cancel deletion"), style: .cancel) )
+        alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Confirm Deletion"), style: .default, handler: { _ in self.deleteFreevent(button: sender) }) )
         
         // Present the alert to the user
         self.present(alert, animated: true, completion: nil)
@@ -68,15 +67,17 @@ class FreeventTableViewController: UITableViewController {
             }
         }
         
+        // Delete the pending notification if it exists
+        let center = UNUserNotificationCenter.current()
+        center.removePendingNotificationRequests(withIdentifiers: ["freevent\((category!.freevents[button.tag].id)!)"])
+        
         // Delete the selected freevent and remove it from the tableview
         let indexPath = IndexPath(row: button.tag, section: 0)
         category?.freevents.remove(at: button.tag)
         tableView.deleteRows(at: [indexPath], with: .automatic)
         tableView.reloadData()
         
-        // Delete the pending notification if it exists
-        let center = UNUserNotificationCenter.current()
-        center.removePendingNotificationRequests(withIdentifiers: ["freevent\((category!.freevents[button.tag].id)!)"])
+        
         
         // Save the categories information
         Categories.saveCategories()

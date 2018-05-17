@@ -151,23 +151,28 @@ class Categories {
     static var categories = [Category]()                    // The list of categories
     static var upcoming : Category = Category("Upcoming")   // The upcoming category
     
-    // Adds a new category at specified index 'at'
-    static func addCategory(_ category : Category, at : Int? = nil) {
-        // Determine the last index in the array if at is not sepcified
-        var idx : Int
-        if at == nil {
-            idx = (Categories.categories.count - 1) >= 0 ? Categories.categories.count - 1 : 0
-        }
-        else {
-            idx = at!
-        }
+    // Swaps the position of two categproes in the category
+    private static func swapCategories(_ idx1 : Int,_ idx2 : Int) {
+        let temp = categories[idx1]
+        categories[idx1] = categories[idx2]
+        categories[idx2] = temp
+    }
+    
+    // Adds a new category
+    static func addCategory(_ category : Category) {
+        // Add category to array
+        Categories.categories.append(category)
         
-        if idx > 0 && idx < Categories.categories.count {
-            Categories.categories.insert(category, at: idx)
+        // Check if uncategorized category exists
+        if let _ = getCategory(named: "Uncategorized") {
+            // If the category being added is not the uncategorized category, swap them to ensure uncategorized is last
+            if category.catName != "Uncategorized" {
+                swapCategories(Categories.categories.count - 1, Categories.categories.count - 2)
+            }
         }
-        else {
-            Categories.categories.append(category)
-        }
+
+        
+        
     }
     
     // Returns a category at the specified index
