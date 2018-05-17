@@ -2,20 +2,29 @@
 //  AppDelegate.swift
 //  Freedom
 //
-//  Created by user137759 on 4/19/18.
-//  Copyright © 2018 user137759. All rights reserved.
+//  Created by Cameron Pleissnitzer on 4/19/18.
+//  Copyright © 2018 Cameron Pleissnitzer. All rights reserved.
 //
 
 import UIKit
+import UserNotifications
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterDelegate {
 
     var window: UIWindow?
-
-
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // Request for user permission to send notifications (this is only prompted once and saved by the system)
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound])
+        {
+            (granted, error) in
+            // Enable or disable features based on authorization.
+            // Freevent.notificationsEnabled = false
+        }
         return true
     }
 

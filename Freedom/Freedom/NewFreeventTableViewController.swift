@@ -2,82 +2,119 @@
 //  NewFreeventTableTableViewController.swift
 //  Freedom
 //
-//  Created by user137759 on 5/7/18.
-//  Copyright © 2018 user137759. All rights reserved.
+//  Created by Cameron Pleissnitzer on 5/7/18.
+//  Copyright © 2018 Cameron Pleissnitzer. All rights reserved.
 //
 
 import UIKit
 
-class NewFreeventTableViewController: UITableViewController, UITextViewDelegate, UITextFieldDelegate, ChooseCategoryTVCDelegate, DatePickerVCDelegate {
-    func passDate(date: Date) {   
-        if rowSelected == 2 {
-            endDateLabel.text = dateFormatter.string(from: date)
-        }
-        else if rowSelected == 3 {
-            reminderDateLabel.text = dateFormatter.string(from: date)
-        }
-    }
+class NewFreeventTableViewController: UITableViewController, UITextViewDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ChooseCategoryTVCDelegate, DatePickerVCDelegate {
     
-    func passCategory(pCategory: Category) {
-        category = pCategory
-    }
+    
     
     
     //MARK: Properties
     @IBOutlet weak var saveButton: UIBarButtonItem!
-    @IBOutlet weak var cancelButton: UIBarButtonItem!
     @IBOutlet weak var nameTextField: UITextField!
     @IBOutlet weak var notesTextView: UITextView!
     @IBOutlet weak var categoryLabel: UILabel!
     @IBOutlet weak var endDateLabel: UILabel!
     @IBOutlet weak var reminderDateLabel: UILabel!
+    @IBOutlet weak var photoImageView: UIImageView!
     
+    var freevent : Freevent?            // Holds the freevent to be created or to be edited
+    var category : Category?            // Holds the category chosen for the freevent to be added to
+    let minCellHeight = CGFloat(50)     // Minimum height of each cell
+    var notesCellHeight = CGFloat()     // Height of the notes cell, needs to be recalculated as text is added to the notesTextView
+    var iconCellHeight = CGFloat(275)   // Height of the icon cell
+    var rowSelected : Int = 0           // The last selected row
+    var editMode : Bool = false         // Whether or not the view was accessed via an edit button or New Freevent... button
     
-    var freevent : Freevent?
-    var category : Category?
-    let minCellHeight: CGFloat = 50
-    var notesCellHeight = CGFloat()
-    var rowSelected : Int = 0
-    var editMode : Bool = false
+    let dateFormatter = DateFormatter() // The DateFormatter used to convert dates to strings and vice versa
+    let format = "E, dd/MM/yy h:mm a"   // The constant date format used in converting dates and strings
     
-    let dateFormatter = DateFormatter()
-    let format = "E, dd/MM/yy h:mm a"
+   
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "Azedo-Bold", size: 23)!]
+        // Assign delegates
+        nameTextField.delegate = self
         notesTextView.delegate = self
+        
+        // Setup the notesTextView and nameTextField
+        nameTextField.layer.borderWidth = 1.0
         notesCellHeight = minCellHeight
         
+        // Setup the navigation bar
+        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "Azedo-Bold", size: 23)!]
+        
+        // Set the DateFormatters dateFormat to the specified format constant
         dateFormatter.dateFormat = format
         
+        // If this view was passed a Freevent from a segue, activate edit mode and load the data from the freevent
         if freevent != nil {
             editMode = true
             loadEditData()
         }
-        // Do any additional setup after loading the view.
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        categoryLabel.text = category?.catName ?? "Uncategorized"
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        
+        // Update the save button state
+        updateSaveButtonState()
     }
     
     //MARK: - Functions
+    
+    // Loads the data into each field for a passed Freevent
     func loadEditData() {
-        navigationItem.title = "Edit \((freevent!.freeName)!)"
+        // Change the title
+        navigationItem.title = "Edit \(freevent!.freeName)"
+        
         nameTextField.text = freevent!.freeName
         notesTextView.text = freevent!.freeNotes
-        endDateLabel.text = dateFormatter.string(from: freevent!.freeEndDate!)
-        reminderDateLabel.text = dateFormatter.string(from: freevent!.freeReminderDate!)
+        endDateLabel.text = dateFormatter.string(from: freevent!.freeEndDate)
+        reminderDateLabel.text = dateFormatter.string(from: freevent!.freeReminderDate)
+        photoImageView.image = freevent!.freeImg
         category = freevent!.freeCategory
-        categoryLabel.text = "\((category!.catName)!)"
+        categoryLabel.text = "\(category!.catName)"
+    }
+    
+    // Updates the curent state of the save button (enabled/disabled) based on valid/invalid data
+    func updateSaveButtonState() {
+        var isValid : Bool = true
+        
+        // Validate the name text field
+        if nameTextField.text == "" {
+            nameTextField.layer.borderColor = UIColor.red.cgColor
+            
+            isValid = false
+        }
+        else {
+            nameTextField.layer.borderColor = UIColor.black.cgColor
+        }
+        
+        // Validate the end date
+        if endDateLabel.text == "None" {
+            endDateLabel.textColor = UIColor.red
+            
+            isValid = false
+        }
+        else {
+            endDateLabel.textColor = self.view.tintColor
+        }
+        
+        // validate the reminder date
+        if reminderDateLabel.text == "None" {
+            reminderDateLabel.textColor = UIColor.red
+            
+            isValid = false
+        }
+        else {
+            reminderDateLabel.textColor = self.view.tintColor
+        }
+        
+        // Set the save button state
+        saveButton.isEnabled = isValid
     }
     
     //MARK: - Actions
@@ -85,29 +122,121 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
         dismiss(animated: true, completion: nil)
     }
     
+    // When the icon cell is tapped, allow the user to select an image from their photo library
+    @IBAction func selectCustomImage(_ sender: UITapGestureRecognizer) {
+        // Hide keyboards if user taps the image view while using the keyboard and updates save button state
+        nameTextField.resignFirstResponder()
+        notesTextView.resignFirstResponder()
+        updateSaveButtonState()
+        
+        // Initialise the image picker controller
+        let imagePickerController = UIImagePickerController()
+        
+        // Assign the source for selecting photos from
+        imagePickerController.sourceType = .photoLibrary
+        
+        // Assign delegate to self
+        imagePickerController.delegate = self
+        
+        // Present the image picker to the user
+        present(imagePickerController, animated: true, completion: nil)
+    }
     
-    // MARK: - Text View Delegate
+    //MARK: - DatePickerVCDelegate
+    // Passes the date selected in DatePickerViewController's UIDatePicker to be conveted to a string and displayed to the user
+    func passDate(date: Date) {
+        
+        // Set end date label text
+        if rowSelected == 2 {
+            endDateLabel.text = dateFormatter.string(from: date)
+        }
+            
+            // Set reminder date label text
+        else if rowSelected == 3 {
+            reminderDateLabel.text = dateFormatter.string(from: date)
+            
+            // Set the end date if it occurs before the reminder date
+            let diff : TimeInterval = date.timeIntervalSince(dateFormatter.date(from: endDateLabel.text!) ?? Date())
+            
+            if diff > 0 {
+                endDateLabel.text = dateFormatter.string(from: date)
+            }
+        }
+        
+        // Update save button state
+        updateSaveButtonState()
+    }
+    
+    //MARK: - ChooseCategoryTVCDelegate
+    // Passes the category selected in ChooseCategoryTableViewController - using a delegate method was chosen as it is a simple way of reverse navigability through view hierarchies
+    func passCategory(pCategory: Category) {
+        category = pCategory
+        categoryLabel.text = category!.catName
+    }
+    
+    //MARK: - Image Picker Controller Delegate
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    // Retrieve the selected image and assign it to the photoImageView
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        guard let selectedImage = info[UIImagePickerControllerOriginalImage] as? UIImage else {
+            fatalError("Expected a dictionary containing an image, but was provided the following: \(info)")
+        }
+        
+        photoImageView.image = selectedImage
+        dismiss(animated: true, completion: nil)
+    }
+    
+    //MARK: - Text Field Delegate
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        // Hide the keyboard
+        textField.resignFirstResponder()
+        
+        // Update save button state
+        updateSaveButtonState()
+        
+        return true
+    }
+    
+    // Disable the save button while editing
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        saveButton.isEnabled = false
+    }
+    
+    //MARK: - Text View Delegate
     func textViewDidChange(_ textView: UITextView) {
         // Calculate the text view frame size required
         let width = textView.frame.size.width
-        let newSize = textView.sizeThatFits(CGSize(width: width, height: .greatestFiniteMagnitude))
+        let newSize = textView.sizeThatFits(CGSize(width: width, height: .leastNormalMagnitude))
         
-        notesCellHeight = newSize.height > minCellHeight ? newSize.height : minCellHeight
+        // Conditional operator to pick the larger of newSize.height and minCellHeight
+        notesCellHeight = (newSize.height > minCellHeight ? newSize.height : minCellHeight) + CGFloat(1)
         
+        // Set the new frame size
         textView.frame.size = CGSize(width: max(newSize.width, width), height: notesCellHeight)
         
+        // Ensures smooth transition of cell height changes
         UIView.setAnimationsEnabled(false)
         tableView.beginUpdates()
         tableView.endUpdates()
         UIView.setAnimationsEnabled(true)
     }
     
+    // Disable the save button while editing
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        saveButton.isEnabled = false
+    }
     
+    // Hides the keyboard when the return key is pressed
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
         if (text == "\n") {
             textView.resignFirstResponder()
             return false
         }
+        updateSaveButtonState()
         return true
     }
 
@@ -115,94 +244,69 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
         return 6
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        // Notes cell
         if indexPath.row == 1 {
             return notesCellHeight
         }
+            
+        // Icon cell
+        else if indexPath.row == 4 {
+            return iconCellHeight
+        }
+            
+        // All other cell
         else {
             return minCellHeight
         }
+        
+        
     }
     
+    // Performs segues to relevant attribute picker screens
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // Store the row selected
         rowSelected = indexPath.row
+        
+        // End date cell
         if indexPath.row == 2 {
-            performSegue(withIdentifier: "EndDatePicker", sender: self)
+            performSegue(withIdentifier: "EndDatePickerSegue", sender: self)
         }
+            
+        // Reminder date cell
         else if indexPath.row == 3 {
-            performSegue(withIdentifier: "ReminderDatePicker", sender: self)
+            performSegue(withIdentifier: "ReminderDatePickerSegue", sender: self)
         }
+            
+        // Add to category cell
         else if indexPath.row == 5 {
             performSegue(withIdentifier: "newFreeventChooseCategorySegue", sender: self)
         }
         
     }
 
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
-        return cell
-    }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
 
     // MARK: - Navigation
      override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         // Save/Camcel buttons
         if let _ = sender as? UIBarButtonItem {
+            
+            // Collect field data
             let name = nameTextField.text ?? ""
             let notes = notesTextView.text ?? ""
-            let endDate = dateFormatter.date(from: endDateLabel.text!)
-            let reminderDate = dateFormatter.date(from: reminderDateLabel.text!)
+            let endDate = dateFormatter.date(from: endDateLabel.text!) ?? Date()
+            let reminderDate = dateFormatter.date(from: reminderDateLabel.text!) ?? Date()
+            let img = photoImageView.image
             
-            // Create new uncategorized category if it does not exist or add to it if it does
+            // If Uncategorized was selected, create new uncategorized category if it does not exist or add to it if it does
             if category == nil {
                 if let cat = Categories.getCategory(named: "Uncategorized") {
                     category = cat
@@ -212,44 +316,67 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
                     category = Categories.getCategory(named: "Uncategorized")
                 }
             }
-     
+            
+            // If in editmode, simply update the freevent information and replace the freevent in the category
             if editMode {
-                freevent!.freeName = nameTextField.text
-                freevent!.freeNotes = notesTextView.text
-                freevent!.freeEndDate = dateFormatter.date(from: endDateLabel.text!)
-                freevent!.freeReminderDate = dateFormatter.date(from: reminderDateLabel.text!)
-                //freevent!.freeIcon = nil
-                freevent!.freeCategory!.freevents.remove(at: freevent!.freeCategory!.freevents.index(of: freevent!)!)
-                freevent!.freeCategory = category
+                freevent!.freeName = name
+                freevent!.freeNotes = notes
+                freevent!.freeEndDate = endDate
+                freevent!.freeReminderDate = reminderDate
+                freevent!.freeImg = img!
+                freevent!.freeCategory.freevents.remove(at: freevent!.freeCategory.freevents.index(of: freevent!)!)
+                freevent!.freeCategory = category!
                 category?.addFreevent(freevent!)
             }
+            
+            // If not in edit mode (creating a new freevent), initialse a new freevent with the relevant data
             else {
-                freevent = Freevent(name, notes, endDate!, reminderDate!, nil, category)
+                freevent = Freevent(name, notes, endDate, reminderDate, category!, img)
             }
         }
         
         
         // Attribute picker views
+        
+        // Choosing a category
         if let vc = segue.destination as? ChooseCategoryTableViewController {
+            
+            // Assign delegate and assign the currently selected category
             vc.delegate = self
             vc.selectedCategory = category
-         }
-         else if let vc = segue.destination as? DatePickerViewController {
-            if segue.identifier == "EndDatePicker" {
+        }
+            
+        // Date pickers
+        else if let vc = segue.destination as? DatePickerViewController {
+            // Choosing an end date
+            if segue.identifier == "EndDatePickerSegue" {
+                // Assign delegate to self and update navigation bar title
                 vc.delegate = self
-                vc.navigationItem.title = "End Date"
+                vc.navTitle = "End date"
                 
+                // Change the current date of the UIDatePicker to the current endDate
                 if endDateLabel.text != "None" {
                     vc.date = dateFormatter.date(from: endDateLabel.text!)!
+                    vc.minDate = dateFormatter.date(from: reminderDateLabel.text!) ?? nil
                 }
             }
-            else if segue.identifier == "ReminderDatePicker" {
+            
+            // Choosing a reminder date
+            else if segue.identifier == "ReminderDatePickerSegue" {
+                // Assign delegate to self and update navigation bar title
                 vc.delegate = self
-                vc.navigationItem.title = "Reminder Date"
+                vc.navTitle = "Reminder date"
                 
+                // Set the minDate and maxDate
+                vc.minDate = Date()
+                vc.maxDate = dateFormatter.date(from: endDateLabel.text ?? "") ?? nil
+                
+                // Change the current date of the UIDatePicker to the current reminderDate
                 if reminderDateLabel.text != "None" {
                     vc.date = dateFormatter.date(from: reminderDateLabel.text!)!
+                    
                 }
+                
             }
         }
         

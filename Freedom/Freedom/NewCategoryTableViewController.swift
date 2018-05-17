@@ -2,29 +2,80 @@
 //  NewCategoryTableViewController.swift
 //  Freedom
 //
-//  Created by user137759 on 5/7/18.
-//  Copyright © 2018 user137759. All rights reserved.
+//  Created by Cameron Pleissnitzer on 5/7/18.
+//  Copyright © 2018 Cameron Pleissnitzer. All rights reserved.
 //
 
 import UIKit
 
-class NewCategoryTableViewController: UITableViewController {
+class NewCategoryTableViewController: UITableViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     //MARK: Properties
-    @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var nameTextField: UITextField!  // Displays the name of the category
+    @IBOutlet weak var photoImageView: UIImageView! // Displays the category's icon
+    @IBOutlet weak var saveButton: UIBarButtonItem! // Reference to the button which saves the category
     
-    var category : Category?
+    
+    var category : Category?    // Holds the category to be created or edited
+    var editMode : Bool = false // Whether or not the view was accessed via an edit button or New Category... button
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // Assign delegate to self
+        nameTextField.delegate = self
+        nameTextField.layer.borderWidth = 1.0
+        
+        // Setup the navigation bar
         self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "Azedo-Bold", size: 23)!]
-        // Do any additional setup after loading the view.
+        
+        // If this view was passed a Category from a segue, activate edit mode and load the data from the category
+        if category != nil {
+            editMode = true
+            loadEditData()
+        }
+        
+        // Update the save button state
+        updateSaveButtonState()
     }
     
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    //MARK: - Functions
+    // Loads the data into relevant fields from a passed category
+    func loadEditData() {
+        nameTextField.text = category!.catName
+        photoImageView.image = category!.catImg
+    }
+    
+    // Updates the curent state of the save button (enabled/disabled) based on valid/invalid data
+    func updateSaveButtonState() {
+        var isValid : Bool = true
+        
+        // Validate the name text field
+        if nameTextField.text == "" {
+            nameTextField.layer.borderColor = UIColor.red.cgColor
+            
+            isValid = false
+        }
+        else if Categories.categories.count == 0 {
+            nameTextField.layer.borderColor = UIColor.black.cgColor
+        }
+        else if !editMode {
+            // Validate no duplicate category names
+            for cat in Categories.categories {
+                if cat.catName == nameTextField.text {
+                    nameTextField.layer.borderColor = UIColor.red.cgColor
+                    
+                    isValid = false
+                    break
+                }
+                else {
+                    nameTextField.layer.borderColor = UIColor.black.cgColor
+                }
+            }
+        }
+
+        // Set the save button state
+        saveButton.isEnabled = isValid
     }
     
     //MARK: - Actions
@@ -32,82 +83,83 @@ class NewCategoryTableViewController: UITableViewController {
         dismiss(animated: true, completion: nil)
     }
     
-    
-    // MARK: - Navigation
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let button = sender as? UIBarButtonItem
+    // When the icon cell is tapped, allow the user to select an image from their photo library
+    @IBAction func selectCustomImage(_ sender: UITapGestureRecognizer) {
+        // Hide keyboards if user taps the image view while using the keyboard and update the save button state
+        nameTextField.resignFirstResponder()
+        updateSaveButtonState()
         
-        let name = nameTextField.text ?? ""
+        // Initialise the image picker controller
+        let imagePickerController = UIImagePickerController()
         
-        category = Category(name)
+        // Assign the source for selecting photos from
+        imagePickerController.sourceType = .photoLibrary
+        
+        // Assign delegate to self
+        imagePickerController.delegate = self
+        
+        // Present the image picker to the user
+        present(imagePickerController, animated: true, completion: nil)
     }
+    
+    //MARK: - Image Picker Controller Delegate
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    // Retrieve the selected image and assign it to the photoImageView
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        guard let selectedImage = info[UIImagePickerControllerOriginalImage] as? UIImage else {
+            fatalError("Expected a dictionary containing an image, but was provided the following: \(info)")
+        }
+        
+        photoImageView.image = selectedImage
+        dismiss(animated: true, completion: nil)
+    }
+    
+    //MARK: - Text Field Delegate
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        // Hide the keyboard
+        textField.resignFirstResponder()
+        
+        // Update the save button state
+        updateSaveButtonState()
+        
+        return true
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        saveButton.isEnabled = false
+    }
+    
+    
 
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
         return 1
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        // #warning Incomplete implementation, return the number of rows
-        return 3
+        return 2
     }
-
-    /*
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "reuseIdentifier", for: indexPath)
-
-        // Configure the cell...
-
-        return cell
-    }
-    */
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
+    
     // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        let name = nameTextField.text ?? ""
+        
+        // If in edit mode, update the passed category's details
+        if editMode {
+            category!.catName = nameTextField.text!
+            category!.catImg = photoImageView.image
+            
+        }
+        // If not in edit mode, create a new category from the field data
+        else {
+            category = Category(name, photoImageView.image)
+        }
     }
-    */
+
 
 }
