@@ -12,9 +12,6 @@ class NewItemViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Setup the navigation controller
-        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "Azedo-Bold", size: 23)!]
     }
     
     //MARK: - Actions

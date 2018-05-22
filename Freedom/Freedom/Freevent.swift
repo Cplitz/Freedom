@@ -11,23 +11,24 @@ import Foundation
 import UIKit
 import UserNotifications
 
-class Freevent : NSObject, NSCoding {
+class Freevent : NSObject, NSSecureCoding {
+    static var supportsSecureCoding: Bool { get {return true} }
+    static var notificationsEnabled : Bool = true
     
+
     //MARK: Properties
-    static var nFreevents = 0                   // Current number of created freevents
-    
-    var id : Int?                                // the freevent ID
+    var freeID : Int                            // the freevent ID
     var freeName : String                       // name of the freevent
     var freeNotes : String                      // notes about the freevent
     var freeEndDate : Date                      // when the freevent should be considered overdue
     var freeReminderDate : Date                 // when the freevent should be considered 'upcoming' and a reminder is sent
-    var freeImg: UIImage                        // the icon of the freevent
-    var freeCategory : Category                 // the category the freevent belongs too
-    var notification : UNNotificationRequest?   // the notification request tied to the freevent
+    var freeImg : UIImage                       // the icon displayed next to the freevent
+    var freeCategory : Category
     
     //MARK: Types
     // Used for encoding and decoding persistent data
     struct PropertyKey {
+        static let theID = "freeID"
         static let name = "freeName"
         static let notes = "freeNotes"
         static let endDate = "freeEndDate"
@@ -37,32 +38,26 @@ class Freevent : NSObject, NSCoding {
     }
     
     // Class initialiser
-    init(_ name : String,_ notes : String,_ endDate : Date,_ reminderDate : Date,_ category : Category,_ img : UIImage? = nil)
+    init(_ name : String,_ notes : String,_ endDate : Date,_ reminderDate : Date,_ category : Category, _ img : UIImage? = nil,_ id : Int? = nil, withNotification : Bool = true)
     {
-        
+        if id == nil    { freeID = Categories.getNumFreevents() + 1 }
+        else            { freeID = id! }
         freeName = name
         freeNotes = notes
         freeEndDate = endDate
         freeReminderDate = reminderDate
         freeCategory = category
         if img == nil {
-            freeImg = UIImage(named: "defaultFreeventImg")!
+            freeImg =  UIImage(named: "defaultFreeventImg")!
         }
         else {
             freeImg = img!
         }
         
         super.init()
-        id = generateID()
         
-        sendNotification()
-    }
-    
-    // Generates a new freevent ID
-    private func generateID() -> Int {
-        Freevent.nFreevents += 1
-        let newID : Int = Freevent.nFreevents
-        return newID
+        if withNotification && Freevent.notificationsEnabled { setupNotification() }
+        
     }
     
     // Converts a number of seconds into human readable format, displaying the first two non-zero units of time (e.g. 2 days, 0 hours, 0 minutes, 20 seconds displays as 2 days, 20 seconds)
@@ -131,10 +126,11 @@ class Freevent : NSObject, NSCoding {
     private func scheduleReminderNotification() {
         // Setup the notification's content
         let content = UNMutableNotificationContent()
-        content.title = NSString.localizedUserNotificationString(forKey: "Reminder: \(freeName)  Freevent due soon", arguments: nil)
-        content.body = NSString.localizedUserNotificationString(forKey: "Category: \(freeCategory.catName)",
-            arguments: nil)
+        content.title = NSString.localizedUserNotificationString(forKey: "Reminder: \(freeName) due in \(readableTimeLeft())", arguments: nil)
+        content.body = NSString.localizedUserNotificationString(forKey: "Category: \(freeCategory.catName)", arguments: nil)
         content.sound = UNNotificationSound.default()
+        content.categoryIdentifier = "reminder"
+        content.userInfo = ["id" : freeID]
         
         
         // Configure the trigger to deliver the notification on the reminder date
@@ -143,8 +139,7 @@ class Freevent : NSObject, NSCoding {
         let trigger = UNCalendarNotificationTrigger(dateMatching: triggerDate, repeats: false)
         
         // Create the request object
-        let request = UNNotificationRequest(identifier: "freevent\(id!)", content: content, trigger: trigger)
-        self.notification = request
+        let request = UNNotificationRequest(identifier: "freevent\(freeID)", content: content, trigger: trigger)
         
         // Schedule the request for delivery
         let center = UNUserNotificationCenter.current()
@@ -156,7 +151,7 @@ class Freevent : NSObject, NSCoding {
     }
     
     // Get notification authorization status
-    private func sendNotification() {
+    func setupNotification() {
         let notificationCenter = UNUserNotificationCenter.current()
         
         notificationCenter.getNotificationSettings { (settings) in
@@ -170,37 +165,44 @@ class Freevent : NSObject, NSCoding {
         }
     }
     
+    
     // MARK: - NSCoding
-    // Encodes the freevent data
+    // Encode freevent data
     func encode(with aCoder: NSCoder) {
+        aCoder.encode(freeID, forKey: PropertyKey.theID)
         aCoder.encode(freeName, forKey: PropertyKey.name)
         aCoder.encode(freeNotes, forKey: PropertyKey.notes)
-        aCoder.encode(freeEndDate, forKey: PropertyKey.endDate)
         aCoder.encode(freeReminderDate, forKey: PropertyKey.reminderDate)
+        aCoder.encode(freeEndDate, forKey: PropertyKey.endDate)
         aCoder.encode(freeImg, forKey: PropertyKey.img)
         aCoder.encode(freeCategory, forKey: PropertyKey.category)
     }
     
-    // Decodes the freevent data and creates an instance of a Freevent using that data
+    // Decode freevent data
     required convenience init?(coder aDecoder: NSCoder) {
+ 
+        let theID = aDecoder.decodeInt32(forKey: PropertyKey.theID)
         guard let name = aDecoder.decodeObject(forKey: PropertyKey.name) as? String else {
-            fatalError("The name could not be decoded")
+            return nil
         }
         guard let notes = aDecoder.decodeObject(forKey: PropertyKey.notes) as? String else {
-            fatalError("The notes could not be decoded")
-        }
-        guard let endDate = aDecoder.decodeObject(forKey: PropertyKey.endDate) as? Date else {
-            fatalError("The end date could not be decoded")
+            return nil
         }
         guard let reminderDate = aDecoder.decodeObject(forKey: PropertyKey.reminderDate) as? Date else {
-            fatalError("The reminder date could not be decoded")
+            return nil
         }
-        let img = aDecoder.decodeObject(forKey: PropertyKey.name) as? UIImage
+        guard let endDate = aDecoder.decodeObject(forKey: PropertyKey.endDate) as? Date else {
+            return nil
+        }
+        guard let img = aDecoder.decodeObject(forKey: PropertyKey.img) as? UIImage else {
+            return nil
+        }
         guard let category = aDecoder.decodeObject(forKey: PropertyKey.category) as? Category else {
-            fatalError("The category could not be decoded")
+            return nil
         }
-        
-        self.init(name, notes, endDate, reminderDate, category, img)
+ 
+        self.init(name, notes, endDate, reminderDate, category, img, Int(theID), withNotification: false)
+ 
     }
 }
 

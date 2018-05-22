@@ -10,9 +10,6 @@ import UIKit
 
 class NewFreeventTableViewController: UITableViewController, UITextViewDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, ChooseCategoryTVCDelegate, DatePickerVCDelegate {
     
-    
-    
-    
     //MARK: Properties
     @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var nameTextField: UITextField!
@@ -23,6 +20,7 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
     @IBOutlet weak var photoImageView: UIImageView!
     
     var freevent : Freevent?            // Holds the freevent to be created or to be edited
+    var originalCategory: Category?     // Holds the original passed category before editing
     var category : Category?            // Holds the category chosen for the freevent to be added to
     let minCellHeight = CGFloat(50)     // Minimum height of each cell
     var notesCellHeight = CGFloat()     // Height of the notes cell, needs to be recalculated as text is added to the notesTextView
@@ -38,6 +36,8 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Set the categoryLabel
+        categoryLabel.text = category!.catName
         
         // Assign delegates
         nameTextField.delegate = self
@@ -47,15 +47,13 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
         nameTextField.layer.borderWidth = 1.0
         notesCellHeight = minCellHeight
         
-        // Setup the navigation bar
-        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "Azedo-Bold", size: 23)!]
-        
         // Set the DateFormatters dateFormat to the specified format constant
         dateFormatter.dateFormat = format
         
         // If this view was passed a Freevent from a segue, activate edit mode and load the data from the freevent
         if freevent != nil {
             editMode = true
+            originalCategory = category
             loadEditData()
         }
         
@@ -76,7 +74,7 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
         reminderDateLabel.text = dateFormatter.string(from: freevent!.freeReminderDate)
         photoImageView.image = freevent!.freeImg
         category = freevent!.freeCategory
-        categoryLabel.text = "\(category!.catName)"
+        categoryLabel.text = category!.catName
     }
     
     // Updates the curent state of the save button (enabled/disabled) based on valid/invalid data
@@ -100,7 +98,7 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
             isValid = false
         }
         else {
-            endDateLabel.textColor = self.view.tintColor
+            endDateLabel.textColor = UIColor.white
         }
         
         // validate the reminder date
@@ -110,7 +108,7 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
             isValid = false
         }
         else {
-            reminderDateLabel.textColor = self.view.tintColor
+            reminderDateLabel.textColor = UIColor.white
         }
         
         // Set the save button state
@@ -118,9 +116,6 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
     }
     
     //MARK: - Actions
-    @IBAction func cancelPressed(_ sender: UIBarButtonItem) {
-        dismiss(animated: true, completion: nil)
-    }
     
     // When the icon cell is tapped, allow the user to select an image from their photo library
     @IBAction func selectCustomImage(_ sender: UITapGestureRecognizer) {
@@ -308,6 +303,7 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
             
             // If Uncategorized was selected, create new uncategorized category if it does not exist or add to it if it does
             if category == nil {
+                
                 if let cat = Categories.getCategory(named: "Uncategorized") {
                     category = cat
                 }
@@ -315,23 +311,21 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
                     Categories.categories.append(Category("Uncategorized"))
                     category = Categories.getCategory(named: "Uncategorized")
                 }
+                
             }
             
-            // If in editmode, simply update the freevent information and replace the freevent in the category
-            if editMode {
-                freevent!.freeName = name
-                freevent!.freeNotes = notes
-                freevent!.freeEndDate = endDate
-                freevent!.freeReminderDate = reminderDate
-                freevent!.freeImg = img!
-                freevent!.freeCategory.freevents.remove(at: freevent!.freeCategory.freevents.index(of: freevent!)!)
-                freevent!.freeCategory = category!
-                category?.addFreevent(freevent!)
-            }
             
-            // If not in edit mode (creating a new freevent), initialse a new freevent with the relevant data
-            else {
+            // If not in edit mode (creating a new freevent), initialse a new freevent with the relevant data - otherwise remove the freevent from the original category and add it to the new one
+            if !editMode {
                 freevent = Freevent(name, notes, endDate, reminderDate, category!, img)
+            }
+            else {
+                originalCategory!.freevents.remove(at: originalCategory!.freevents.index(of: freevent!)!)
+                category!.addFreevent(freevent!)
+                
+                // Pass the category back to the FreeventTableViewController (this will not already be set if editMode is accessed from the Reschedule notification action
+                let vc = segue.destination as! FreeventTableViewController
+                vc.category = category
             }
         }
         

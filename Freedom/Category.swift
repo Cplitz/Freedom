@@ -12,11 +12,15 @@ import UIKit
 import UserNotifications
 
 class Category : NSObject, NSCoding {
+    static var supportsSecureCoding: Bool { get {return true} }
+    
+    
+    
     
     //MARK: Properties
-    var catName : String           // the name of the category
+    var catName : String            // the name of the category
     var numUpcoming : Int = 0       // the number of upcoming freevents in the category
-    var catImg: UIImage?            // the category's icon
+    var catImg: UIImage            // the category's icon
     var freevents = [Freevent]()    // the list of freevents in the category
     
     //MARK: Archiving Paths
@@ -24,21 +28,23 @@ class Category : NSObject, NSCoding {
     static let ArchiveURL = DocumentsDirectory.appendingPathComponent("categories")
     
     //MARK: Types
-    // Used for encoding and decoding persistent data
-    struct PropertyKey {
-        static let name = "catName"
-        static let img = "catImg"
+    // Used for encoding and decoding data
+    struct PropertyKey  {
+        static let name = "freeName"
+        static let img = "freeImg"
         static let freevents = "freevents"
     }
+
     
     // Class initialiser
     init(_ name : String,_ img : UIImage? = nil, _ initFreevents : [Freevent] = [Freevent]()) {
+        
         catName = name
         if img == nil {
-            catImg = UIImage(named: "defaultCategoryImg")
+            catImg = UIImage(named: "defaultCategoryImg")!
         }
         else {
-            catImg = img
+            catImg = img!
         }
         
         freevents = initFreevents
@@ -129,21 +135,23 @@ class Category : NSObject, NSCoding {
         aCoder.encode(freevents, forKey: PropertyKey.freevents)
     }
     
-    // Decodes the class data and initialises a new Category object with that dataz
     required convenience init?(coder aDecoder: NSCoder) {
         guard let name = aDecoder.decodeObject(forKey: PropertyKey.name) as? String else {
-            fatalError("Failed to decode name")
+            //fatalError("Unable to decode name")
             return nil
         }
-        
-        let photo = aDecoder.decodeObject(forKey: PropertyKey.img) as? UIImage
+        guard let img = aDecoder.decodeObject(forKey: PropertyKey.img) as? UIImage else {
+            //fatalError("Unable to decode img")
+            return nil
+        }
         guard let freevents = aDecoder.decodeObject(forKey: PropertyKey.freevents) as? [Freevent] else {
-            fatalError("Failed to decode freevents")
+            //fatalError("Unable to decode freevents")
             return nil
         }
         
-        self.init(name, photo, freevents)
+        self.init(name, img, freevents)
     }
+
 }
 
 // Class representing all of the stored categories in the application
@@ -193,6 +201,25 @@ class Categories {
         return nil
     }
     
+    static func getNumFreevents() -> Int {
+        var numFreevents = 0
+        for cat in categories {
+            numFreevents += cat.freevents.count
+        }
+        return numFreevents
+    }
+    
+    static func getFreevent(withID : Int) -> Freevent? {
+        for cat in categories {
+            for f in cat.freevents {
+                if f.freeID == withID {
+                    return f
+                }
+            }
+        }
+        return nil
+    }
+    
     // Calculates the freevents which are upcoming and adds them to the upcoming category
     static func calculateUpcoming() {
         Categories.upcoming.freevents = []
@@ -205,19 +232,20 @@ class Categories {
     static func loadSampleCategories() {
         if categories.count == 0 {
             
-            categories.append ( Category("Testing", UIImage(named: "freevent1")!) )
+            categories.append ( Category("School", UIImage(named: "freevent1")!) )
             
-            categories.append ( Category("Testing1", UIImage(named: "freevent2")!) )
+            categories.append ( Category("Work", UIImage(named: "freevent2")!) )
             
-            categories.append ( Category("Testing2", UIImage(named: "freevent3")!) )
+            categories.append ( Category("Uncategorized", UIImage(named: "freevent3")!) )
             
         }
     }
     
+    
+    
     // Saves the current list of categories
     static func saveCategories() {
-        let isSuccessfulSave = NSKeyedArchiver.archiveRootObject(Categories.categories, toFile: Category.ArchiveURL.path)
-        print(isSuccessfulSave)
+        NSKeyedArchiver.archiveRootObject(Categories.categories, toFile: Category.ArchiveURL.path)
     }
     
     // Loads the saved list of categories

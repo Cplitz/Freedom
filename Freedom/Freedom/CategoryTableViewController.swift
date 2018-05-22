@@ -11,76 +11,58 @@ import UIKit
 class CategoryTableViewController: UITableViewController {
 
     //MARK: Properties
-    var rowSelected : Int = 0   // The last selected row
-    
+    var rowSelected : Int = 0               // The last selected row
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // Setup the navigation bar
-        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "Azedo-Bold", size: 23)!]
-        
-        // Load saved categories
-        if let savedCategories = Categories.loadCategories() {
-            Categories.categories += savedCategories
-        }
-        else {
-            Categories.loadSampleCategories()
-        }
+        // Configure refresh control
+        refreshControl?.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged)
+
     }
     
     // Reload the table view data and recalculate upcoming freevents each time the view is reloaded
     override func viewWillAppear(_ animated: Bool) {
-        tableView.reloadData()
-        Categories.calculateUpcoming()
+        refresh()
     }
 
+    //MARK: - Functions
+    @objc func refresh() {
+        tableView.reloadData()
+        Categories.calculateUpcoming()
+        refreshControl?.endRefreshing()
+    }
+    
     //MARK: - Actions
     
-    // Called from the NewFreeventTableViewController and NewCategoryTableViewController Save buttons, handles adding/editing freevents created in those screens
-    @IBAction func unwindToCategoryList(sender: UIStoryboardSegue)
+    @IBAction func unwindToCategoryListBack(sender: UIStoryboardSegue) {
+        //do nothing
+    }
+    
+    // Called from the NewCategoryTableViewController Save button, handles adding/editing categories
+    @IBAction func unwindToCategoryListSave(sender: UIStoryboardSegue)
     {
         // Add a new category (NOTE: Editing a category just changes its attributes and changes are reflected without additional code here
         if let sourceViewController = sender.source as? NewCategoryTableViewController, let category = sourceViewController.category {
             
-            // If the view was not in editing mode, add the newly created category
-            if sourceViewController.editMode == false {
-                
+            if !sourceViewController.editMode {
                 // Adds the new category at the correct index - Uncategorized must always be the last in the list
                 Categories.addCategory(category)
-                
-                // Get the new index path
-                let newIndexPath = IndexPath(row: Categories.categories.index(of: category)!, section: 0)
-                
-                // Insert the new table view row
-                tableView.insertRows(at: [newIndexPath], with: .automatic)
+    
+                // Save the updated list of categories
+                Categories.saveCategories()
             }
-            
-            // Save the updated list of categories
-            Categories.saveCategories()
-        }
-        
-        // Add a new frevent
-        else if let sourceViewController = sender.source as? NewFreeventTableViewController, let freevent = sourceViewController.freevent {
-            
-            // If the view was not in editing mode, continue to add the freevent
-            if sourceViewController.editMode == false {
-                
-                // Add the freevent to the correct category
-                let category = sourceViewController.category
-                category?.addFreevent(freevent)
-                
-                // Update the table view
-                if tableView.numberOfRows(inSection: 0) < Categories.categories.count {
-                    let newIndexPath = IndexPath(row: Categories.categories.index(of: category!)!, section: 0)
-                    tableView.insertRows(at: [newIndexPath], with: .automatic)
-                }
+            else {
+                category.catName = sourceViewController.nameTextField.text!
+                category.catImg = sourceViewController.photoImageView.image!
             }
-            
-            // Save the updated list of categories (contains updated information of freevents)
-            Categories.saveCategories()
-            
         }
+    }
+    
+    // Called fromt he NewCategoryTableViewController Cancel button
+    @IBAction func unwindToCategoryListCancel(sender: UIStoryboardSegue) {
+        // do nothing
     }
     
     // Performs a segue to edit a selected category
@@ -111,7 +93,12 @@ class CategoryTableViewController: UITableViewController {
         let indexPath = IndexPath(row: button.tag, section: 0)
         
         // Remove the category from the list of categories and the tableview
-        Categories.categories.remove(at: button.tag)
+        if Categories.categories.count == 1 {
+            Categories.categories = []
+        }
+        else {
+            Categories.categories.remove(at: button.tag)
+        }
         tableView.deleteRows(at: [indexPath], with: .automatic)
         
         // Save the categories and reload the data
@@ -144,16 +131,27 @@ class CategoryTableViewController: UITableViewController {
         cell.selectionStyle = .none
         cell.nameLabel.text = category!.catName
         cell.photoImageView.image = category!.catImg
+        cell.numFreeventsLabel.text = "\(category!.freevents.count)\nFreevents"
         
         // Calculate and display the number of upcoming freevents contained in the category
         let nUpcoming : Int = category!.calculateUpcoming()
-        if nUpcoming > 0 { cell.upcomingLabel.textColor = UIColor.red }
+        if nUpcoming > 0 { cell.upcomingLabel.textColor = UIColor.white }
         else { cell.upcomingLabel.textColor = UIColor.black }
-        cell.upcomingLabel.text = "\(nUpcoming)\nUpcoming"
+        cell.upcomingLabel.text = "\(nUpcoming)"
         
-        // Convenient method of determining which cell's button was pressed in the table view
-        cell.editButton.tag = indexPath.row
-        cell.deleteButton.tag = indexPath.row
+            // Disable and hide the edit and delete buttons for uncategorized category
+        if category?.catName == "Uncategorized" {
+            cell.editButton.isHidden = true
+            cell.deleteButton.isHidden = true
+            cell.editButton.isUserInteractionEnabled = false
+            cell.deleteButton.isUserInteractionEnabled = false
+        }
+            // Convenient method of determining which cell's button was pressed in the table view
+        else {
+            cell.editButton.tag = indexPath.row
+            cell.deleteButton.tag = indexPath.row
+        }
+        
         
         return cell
     }
@@ -184,13 +182,9 @@ class CategoryTableViewController: UITableViewController {
             // Set the category to the upcoming category to display upcoming freevents
             vc.category = Categories.upcoming
         }
-            
         // Segue to NewCategoryTableViewController when the edit button in a cell is selected
         else if segue.identifier == "editCategorySegue" {
-            
-            // Must segue to the UINavigation controller first and obtain the NewCategoryTableViewController in the view controller stack to preserve UX
-            let navVC = segue.destination as! UINavigationController
-            let vc = navVC.viewControllers[0] as! NewCategoryTableViewController
+            let vc = segue.destination as! NewCategoryTableViewController
             
             // Set the category to be edited to the category of the selected row
             vc.category = Categories.categories[rowSelected]

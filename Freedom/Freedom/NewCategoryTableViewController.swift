@@ -16,8 +16,8 @@ class NewCategoryTableViewController: UITableViewController, UITextFieldDelegate
     @IBOutlet weak var saveButton: UIBarButtonItem! // Reference to the button which saves the category
     
     
-    var category : Category?    // Holds the category to be created or edited
-    var editMode : Bool = false // Whether or not the view was accessed via an edit button or New Category... button
+    var category : Category?          // Holds the category to be created or edited
+    var editMode : Bool = false       // Whether or not the view was accessed via an edit button or New Category... button
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,9 +25,6 @@ class NewCategoryTableViewController: UITableViewController, UITextFieldDelegate
         // Assign delegate to self
         nameTextField.delegate = self
         nameTextField.layer.borderWidth = 1.0
-        
-        // Setup the navigation bar
-        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "Azedo-Bold", size: 23)!]
         
         // If this view was passed a Category from a segue, activate edit mode and load the data from the category
         if category != nil {
@@ -42,6 +39,7 @@ class NewCategoryTableViewController: UITableViewController, UITextFieldDelegate
     //MARK: - Functions
     // Loads the data into relevant fields from a passed category
     func loadEditData() {
+        navigationItem.title = "Editing \(category!.catName)"
         nameTextField.text = category!.catName
         photoImageView.image = category!.catImg
     }
@@ -79,9 +77,6 @@ class NewCategoryTableViewController: UITableViewController, UITextFieldDelegate
     }
     
     //MARK: - Actions
-    @IBAction func cancelPressed(_ sender: UIBarButtonItem) {
-        dismiss(animated: true, completion: nil)
-    }
     
     // When the icon cell is tapped, allow the user to select an image from their photo library
     @IBAction func selectCustomImage(_ sender: UITapGestureRecognizer) {
@@ -147,17 +142,9 @@ class NewCategoryTableViewController: UITableViewController, UITextFieldDelegate
     // MARK: - Navigation
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let name = nameTextField.text ?? ""
-        
-        // If in edit mode, update the passed category's details
-        if editMode {
-            category!.catName = nameTextField.text!
-            category!.catImg = photoImageView.image
-            
-        }
         // If not in edit mode, create a new category from the field data
-        else {
-            category = Category(name, photoImageView.image)
+        if !editMode {
+            category = Category(nameTextField.text!, photoImageView.image)
         }
     }
 

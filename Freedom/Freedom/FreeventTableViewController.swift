@@ -24,11 +24,71 @@ class FreeventTableViewController: UITableViewController {
 
         // Set the navigation title
         navigationItem.title = "\(category!.catName) Freevents"
-        self.navigationController!.navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont(name: "Azedo-Bold", size: 23)!]
+        
+        // Configure refresh control
+        refreshControl?.attributedTitle = NSAttributedString(string: "Pull to refresh")
+        refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged)
         
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        tableView.reloadData()
+    }
+    
+    //MARK: - Functions
+    @objc func refresh() {
+        tableView.reloadData()
+        refreshControl?.endRefreshing()
+    }
+    
     //MARK: - Actions
+    
+    // Called from the NewFreeventTableViewController save button, handles adding/editing freevents created in those screens
+    @IBAction func unwindToFreeventListSave(sender: UIStoryboardSegue)
+    {
+        // Add a new frevent
+        if let sourceViewController = sender.source as? NewFreeventTableViewController, let freevent = sourceViewController.freevent {
+            
+            if !sourceViewController.editMode {
+                // Add the freevent to the correct category
+                let category = sourceViewController.category
+                category?.addFreevent(freevent)
+                
+                // Save the updated list of categories (contains updated information of freevents)
+                Categories.saveCategories()
+            }
+            else {
+                // Edit the category
+                let name = sourceViewController.nameTextField.text ?? ""
+                let notes = sourceViewController.notesTextView.text ?? ""
+                let endDate = sourceViewController.dateFormatter.date(from: sourceViewController.endDateLabel.text!) ?? Date()
+                let reminderDate = sourceViewController.dateFormatter.date(from: sourceViewController.reminderDateLabel.text!) ?? Date()
+                let img = sourceViewController.photoImageView.image
+                freevent.freeName = name
+                freevent.freeNotes = notes
+                freevent.freeEndDate = endDate
+                freevent.freeReminderDate = reminderDate
+                freevent.freeImg = img!
+                freevent.freeCategory = sourceViewController.category!
+                
+                
+                // Delete the pending or delivered notification if it exists
+                let center = UNUserNotificationCenter.current()
+                center.removePendingNotificationRequests(withIdentifiers: ["freevent\(freevent.freeID)"])
+                center.removeDeliveredNotifications(withIdentifiers: ["freevent\(freevent.freeID)"])
+                // Reschedule the notification
+                freevent.setupNotification()
+                
+            }
+            Categories.saveCategories()
+        }
+        
+    }
+    // Called from the NewFreeventTableViewController Cancel button
+    @IBAction func unwindToFreeventListCancel(sender: UIStoryboardSegue) {
+        // do nothing
+    }
+    
     
     // Allows editing of a freevent
     @IBAction func editFreevemt(_ sender: UIButton) {
@@ -67,13 +127,20 @@ class FreeventTableViewController: UITableViewController {
             }
         }
         
-        // Delete the pending notification if it exists
+        // Delete the pending or delivered notification if it exists
         let center = UNUserNotificationCenter.current()
-        center.removePendingNotificationRequests(withIdentifiers: ["freevent\((category!.freevents[button.tag].id)!)"])
+        center.removePendingNotificationRequests(withIdentifiers: ["freevent\(category!.freevents[button.tag].freeID)"])
+        center.removeDeliveredNotifications(withIdentifiers: ["freevent\(category!.freevents[button.tag].freeID)"])
         
         // Delete the selected freevent and remove it from the tableview
         let indexPath = IndexPath(row: button.tag, section: 0)
-        category?.freevents.remove(at: button.tag)
+        if category?.freevents.count == 1 {
+            category?.freevents = []
+        }
+        else {
+            category?.freevents.remove(at: button.tag)
+        }
+        
         tableView.deleteRows(at: [indexPath], with: .automatic)
         tableView.reloadData()
         
@@ -90,7 +157,7 @@ class FreeventTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return category.freevents.count + (isRowSelected ? 1 : 0)
+        return category.freevents.count + (isRowSelected && category.freevents.count > 0 ? 1 : 0)
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -210,12 +277,16 @@ class FreeventTableViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Segue for editing a freevent
         if segue.identifier == "editFreeventSegue" {
-            // Since the segue should run through the navigation controller, we need to get this as the destination and find the top level view controller in the stack
-            if let vc = segue.destination as? UINavigationController {
-                if let newFreeventVC = vc.viewControllers[0] as? NewFreeventTableViewController {
-                    // Set the freevent
-                    newFreeventVC.freevent = category!.freevents[lastRowSelected]
-                }
+            if let newFreeventVC = segue.destination as? NewFreeventTableViewController {
+                // Set the freevent
+                newFreeventVC.freevent = category!.freevents[lastRowSelected]
+                newFreeventVC.category = category
+            }
+        }
+        // Segue for creating a freevent
+        else if segue.identifier == "newFreeventSegue" {
+            if let newFreeventVC = segue.destination as? NewFreeventTableViewController {
+                newFreeventVC.category = category
             }
         }
     }

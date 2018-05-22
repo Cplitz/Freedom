@@ -7,14 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7B2D36C1209EB17B004A51FE /* Azedo-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 7B2D36C0209EB148004A51FE /* Azedo-Bold.otf */; };
 		7B2D36C3209F2B1E004A51FE /* NewItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2D36C2209F2B1E004A51FE /* NewItemViewController.swift */; };
 		7B89BAC4209C0C73001B8A59 /* FreeventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAC3209C0C73001B8A59 /* FreeventTableViewController.swift */; };
 		7B89BAC6209C1368001B8A59 /* FreeventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAC5209C1368001B8A59 /* FreeventTableViewCell.swift */; };
 		7B89BAC8209C13C2001B8A59 /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAC7209C13C2001B8A59 /* CategoryTableViewCell.swift */; };
 		7B89BACA209C1CC6001B8A59 /* CategoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAC9209C1CC6001B8A59 /* CategoryTableViewController.swift */; };
 		7B89BAD0209C22BA001B8A59 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BACF209C22BA001B8A59 /* Category.swift */; };
-		7B8B41232094228D001A2342 /* Freevent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8B41222094228D001A2342 /* Freevent.swift */; };
 		7B93539720A162B000071264 /* ChooseCategoryTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B93539620A162B000071264 /* ChooseCategoryTableViewController.swift */; };
 		7BAA542320885016005DDEC0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAA542220885016005DDEC0 /* AppDelegate.swift */; };
 		7BAA542820885016005DDEC0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7BAA542620885016005DDEC0 /* Main.storyboard */; };
@@ -22,6 +20,7 @@
 		7BAA542D20885017005DDEC0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7BAA542B20885017005DDEC0 /* LaunchScreen.storyboard */; };
 		7BAA543820885017005DDEC0 /* FreedomTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAA543720885017005DDEC0 /* FreedomTests.swift */; };
 		7BAA544320885017005DDEC0 /* FreedomUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAA544220885017005DDEC0 /* FreedomUITests.swift */; };
+		7BAE4EE820AF25BC00D65AC6 /* Freevent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BAE4EE720AF25BC00D65AC6 /* Freevent.swift */; };
 		7BBB321420AC75B10038BE24 /* NotesTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BBB321320AC75B10038BE24 /* NotesTableViewCell.swift */; };
 		7BCAEB2120A689E500AE136F /* DatePickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BCAEB2020A689E500AE136F /* DatePickerViewController.swift */; };
 		7BDDA92020A024A400B19665 /* NewFreeventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BDDA91F20A024A400B19665 /* NewFreeventTableViewController.swift */; };
@@ -46,14 +45,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7B2D36C0209EB148004A51FE /* Azedo-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Azedo-Bold.otf"; path = "../Freedom.xcodeproj/Azedo-Bold.otf"; sourceTree = "<group>"; };
 		7B2D36C2209F2B1E004A51FE /* NewItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewItemViewController.swift; path = "/Users/user137759/Desktop/Xcode apps/Freedom/Freedom/Freedom/NewItemViewController.swift"; sourceTree = "<absolute>"; };
 		7B89BAC3209C0C73001B8A59 /* FreeventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeventTableViewController.swift; sourceTree = "<group>"; };
 		7B89BAC5209C1368001B8A59 /* FreeventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeventTableViewCell.swift; sourceTree = "<group>"; };
 		7B89BAC7209C13C2001B8A59 /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
 		7B89BAC9209C1CC6001B8A59 /* CategoryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewController.swift; sourceTree = "<group>"; };
 		7B89BACF209C22BA001B8A59 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Category.swift; path = ../Category.swift; sourceTree = "<group>"; };
-		7B8B41222094228D001A2342 /* Freevent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Freevent.swift; sourceTree = "<group>"; };
 		7B93539620A162B000071264 /* ChooseCategoryTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChooseCategoryTableViewController.swift; sourceTree = "<group>"; };
 		7BAA541F20885016005DDEC0 /* Freedom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Freedom.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BAA542220885016005DDEC0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -67,6 +64,7 @@
 		7BAA543E20885017005DDEC0 /* FreedomUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FreedomUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7BAA544220885017005DDEC0 /* FreedomUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreedomUITests.swift; sourceTree = "<group>"; };
 		7BAA544420885017005DDEC0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7BAE4EE720AF25BC00D65AC6 /* Freevent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Freevent.swift; sourceTree = "<group>"; };
 		7BBB321320AC75B10038BE24 /* NotesTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotesTableViewCell.swift; sourceTree = "<group>"; };
 		7BCAEB2020A689E500AE136F /* DatePickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerViewController.swift; sourceTree = "<group>"; };
 		7BDDA91F20A024A400B19665 /* NewFreeventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewFreeventTableViewController.swift; sourceTree = "<group>"; };
@@ -121,12 +119,11 @@
 		7BAA542120885016005DDEC0 /* Freedom */ = {
 			isa = PBXGroup;
 			children = (
-				7B2D36C0209EB148004A51FE /* Azedo-Bold.otf */,
 				7BAA542220885016005DDEC0 /* AppDelegate.swift */,
-				7B8B41222094228D001A2342 /* Freevent.swift */,
+				7BAE4EE720AF25BC00D65AC6 /* Freevent.swift */,
 				7B89BAC3209C0C73001B8A59 /* FreeventTableViewController.swift */,
-				7BBB321320AC75B10038BE24 /* NotesTableViewCell.swift */,
 				7B89BAC5209C1368001B8A59 /* FreeventTableViewCell.swift */,
+				7BBB321320AC75B10038BE24 /* NotesTableViewCell.swift */,
 				7B89BACF209C22BA001B8A59 /* Category.swift */,
 				7B89BAC9209C1CC6001B8A59 /* CategoryTableViewController.swift */,
 				7B89BAC7209C13C2001B8A59 /* CategoryTableViewCell.swift */,
@@ -267,7 +264,6 @@
 			files = (
 				7BAA542D20885017005DDEC0 /* LaunchScreen.storyboard in Resources */,
 				7BAA542A20885017005DDEC0 /* Assets.xcassets in Resources */,
-				7B2D36C1209EB17B004A51FE /* Azedo-Bold.otf in Resources */,
 				7BAA542820885016005DDEC0 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -298,7 +294,7 @@
 				7BCAEB2120A689E500AE136F /* DatePickerViewController.swift in Sources */,
 				7B2D36C3209F2B1E004A51FE /* NewItemViewController.swift in Sources */,
 				7BDDA92020A024A400B19665 /* NewFreeventTableViewController.swift in Sources */,
-				7B8B41232094228D001A2342 /* Freevent.swift in Sources */,
+				7BAE4EE820AF25BC00D65AC6 /* Freevent.swift in Sources */,
 				7B89BAC6209C1368001B8A59 /* FreeventTableViewCell.swift in Sources */,
 				7BBB321420AC75B10038BE24 /* NotesTableViewCell.swift in Sources */,
 				7B89BAC4209C0C73001B8A59 /* FreeventTableViewController.swift in Sources */,

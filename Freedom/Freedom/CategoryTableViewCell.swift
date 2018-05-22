@@ -16,5 +16,5 @@ class CategoryTableViewCell: UITableViewCell {
     @IBOutlet weak var upcomingLabel: UILabel!      // Displays the number of upcoming freevents contained in the category
     @IBOutlet weak var deleteButton: UIButton!      // Reference to the delete button in the cell
     @IBOutlet weak var editButton: UIButton!        // Reference to the edit button in the cell
-
+    @IBOutlet weak var numFreeventsLabel: UILabel!      // Displays the number of freevents contained in the category
 }
