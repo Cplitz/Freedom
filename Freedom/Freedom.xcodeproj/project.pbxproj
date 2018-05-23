@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7B2D36C3209F2B1E004A51FE /* NewItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2D36C2209F2B1E004A51FE /* NewItemViewController.swift */; };
 		7B89BAC4209C0C73001B8A59 /* FreeventTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAC3209C0C73001B8A59 /* FreeventTableViewController.swift */; };
 		7B89BAC6209C1368001B8A59 /* FreeventTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAC5209C1368001B8A59 /* FreeventTableViewCell.swift */; };
 		7B89BAC8209C13C2001B8A59 /* CategoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B89BAC7209C13C2001B8A59 /* CategoryTableViewCell.swift */; };
@@ -45,7 +44,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		7B2D36C2209F2B1E004A51FE /* NewItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NewItemViewController.swift; path = "/Users/user137759/Desktop/Xcode apps/Freedom/Freedom/Freedom/NewItemViewController.swift"; sourceTree = "<absolute>"; };
 		7B89BAC3209C0C73001B8A59 /* FreeventTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeventTableViewController.swift; sourceTree = "<group>"; };
 		7B89BAC5209C1368001B8A59 /* FreeventTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeventTableViewCell.swift; sourceTree = "<group>"; };
 		7B89BAC7209C13C2001B8A59 /* CategoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryTableViewCell.swift; sourceTree = "<group>"; };
@@ -127,7 +125,6 @@
 				7B89BACF209C22BA001B8A59 /* Category.swift */,
 				7B89BAC9209C1CC6001B8A59 /* CategoryTableViewController.swift */,
 				7B89BAC7209C13C2001B8A59 /* CategoryTableViewCell.swift */,
-				7B2D36C2209F2B1E004A51FE /* NewItemViewController.swift */,
 				7BDDA91F20A024A400B19665 /* NewFreeventTableViewController.swift */,
 				7BDDA92120A024CC00B19665 /* NewCategoryTableViewController.swift */,
 				7BCAEB2020A689E500AE136F /* DatePickerViewController.swift */,
@@ -292,7 +289,6 @@
 				7B93539720A162B000071264 /* ChooseCategoryTableViewController.swift in Sources */,
 				7BAA542320885016005DDEC0 /* AppDelegate.swift in Sources */,
 				7BCAEB2120A689E500AE136F /* DatePickerViewController.swift in Sources */,
-				7B2D36C3209F2B1E004A51FE /* NewItemViewController.swift in Sources */,
 				7BDDA92020A024A400B19665 /* NewFreeventTableViewController.swift in Sources */,
 				7BAE4EE820AF25BC00D65AC6 /* Freevent.swift in Sources */,
 				7B89BAC6209C1368001B8A59 /* FreeventTableViewCell.swift in Sources */,
