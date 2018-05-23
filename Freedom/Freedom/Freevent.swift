@@ -132,7 +132,6 @@ class Freevent : NSObject, NSSecureCoding {
         content.categoryIdentifier = "reminder"
         content.userInfo = ["id" : freeID]
         
-        
         // Configure the trigger to deliver the notification on the reminder date
         let components : Set<Calendar.Component> = [Calendar.Component.year, Calendar.Component.month, Calendar.Component.day, Calendar.Component.hour, Calendar.Component.minute]
         let triggerDate = Calendar.current.dateComponents(components, from: freeReminderDate)
@@ -159,7 +158,6 @@ class Freevent : NSObject, NSSecureCoding {
             guard settings.authorizationStatus == .authorized else {return}
             
             if settings.alertSetting == .enabled {
-                // Schedule an alert-only notification.
                 self.scheduleReminderNotification()
             }
         }

@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+
         
         // Load saved categories
         if let savedCategories = Categories.loadCategories() {
@@ -28,7 +29,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Request for user permission to send notifications (this is only prompted once and saved by the system)
         let center = UNUserNotificationCenter.current()
         center.delegate = self
-        center.requestAuthorization(options: [.alert, .sound])
+        center.requestAuthorization(options: [.alert, .sound, .badge])
         {
             (granted, error) in
             // Enable or disable notifications based on authorization.
@@ -41,7 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         let rescheduleAction = UNNotificationAction(identifier: "rescheduleAction", title: "Reschedule", options: [.authenticationRequired, .foreground])
         let deleteAction = UNNotificationAction(identifier: "deleteAction", title: "Delete Freevent", options: [.authenticationRequired, .destructive])
         
-        // Define Category
+        // Define Notification Category
         let reminderCategory = UNNotificationCategory(identifier: "reminder", actions: [rescheduleAction, deleteAction], intentIdentifiers: [], hiddenPreviewsBodyPlaceholder: "", options: [])
         
         // Register the category
@@ -52,14 +53,36 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     // handle notifications while user is still in the app
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         
+        // get badge authorization
+        if notification.request.content.categoryIdentifier == "reminder" {
+            center.getNotificationSettings { (settings) in
+                if settings.badgeSetting == .enabled {
+                    // Set the badge number
+                    let application = UIApplication.shared
+                    application.applicationIconBadgeNumber = Categories.calculateUpcoming()
+                }
+            }
+        }
+        
         // Override the default behavior of not displaying a banner/alert notification in the foreground
-        completionHandler(.alert)
+        completionHandler([.alert, .badge])
     }
     
     // push local notifications when user is not in the app
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         // Retrieve the userInfo/data
         let userInfo = response.notification.request.content.userInfo
+        
+        // get badge authorization
+        if response.notification.request.content.categoryIdentifier == "reminder" {
+            center.getNotificationSettings { (settings) in
+                if settings.badgeSetting == .enabled {
+                    // Set the badge number
+                    let application = UIApplication.shared
+                    application.applicationIconBadgeNumber = Categories.calculateUpcoming()
+                }
+            }
+        }
         
         // Handle notification based on action
         switch response.actionIdentifier {
@@ -100,9 +123,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
     }
 
+    // Use this to update the badhge number
     func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
+        // get badge authorization
+        let center  = UNUserNotificationCenter.current()
+        center.getNotificationSettings { (settings) in
+            if settings.badgeSetting == .enabled {
+                // Set the badge number
+                let application = UIApplication.shared
+                application.applicationIconBadgeNumber = Categories.calculateUpcoming()
+            }
+        }
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {

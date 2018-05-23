@@ -29,6 +29,11 @@ class FreeventTableViewController: UITableViewController {
         refreshControl?.attributedTitle = NSAttributedString(string: "Pull to refresh")
         refreshControl?.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged)
         
+        // Remove the add button if in the upcoming category
+        if category.catName == "Upcoming" {
+            navigationItem.rightBarButtonItem?.isEnabled = false
+        }
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -78,6 +83,9 @@ class FreeventTableViewController: UITableViewController {
                 center.removeDeliveredNotifications(withIdentifiers: ["freevent\(freevent.freeID)"])
                 // Reschedule the notification
                 freevent.setupNotification()
+                // Reconfigure the badge number
+                let app = UIApplication.shared
+                app.applicationIconBadgeNumber = Categories.calculateUpcoming()
                 
             }
             Categories.saveCategories()
@@ -141,10 +149,13 @@ class FreeventTableViewController: UITableViewController {
             category?.freevents.remove(at: button.tag)
         }
         
+        // reconfigure the TableView
         tableView.deleteRows(at: [indexPath], with: .automatic)
         tableView.reloadData()
         
-        
+        // reconfigure the badge number
+        let app = UIApplication.shared
+        app.applicationIconBadgeNumber = Categories.calculateUpcoming()
         
         // Save the categories information
         Categories.saveCategories()

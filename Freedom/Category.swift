@@ -221,22 +221,25 @@ class Categories {
     }
     
     // Calculates the freevents which are upcoming and adds them to the upcoming category
-    static func calculateUpcoming() {
+    @discardableResult
+    static func calculateUpcoming() -> Int {
+        var num = 0
         Categories.upcoming.freevents = []
         for category in Categories.categories {
-            category.calculateUpcoming()
+            num += category.calculateUpcoming()
         }
+        return num
     }
     
     // sample categories
     static func loadSampleCategories() {
         if categories.count == 0 {
             
-            categories.append ( Category("School", UIImage(named: "freevent1")!) )
+            categories.append ( Category("School", UIImage(named: "schoolFreevent")!) )
             
-            categories.append ( Category("Work", UIImage(named: "freevent2")!) )
+            categories.append ( Category("Work", UIImage(named: "workFreevent")!) )
             
-            categories.append ( Category("Uncategorized", UIImage(named: "freevent3")!) )
+            categories.append ( Category("Uncategorized", UIImage(named: "defaultCategoryImg")!) )
             
         }
     }

@@ -131,7 +131,7 @@ class CategoryTableViewController: UITableViewController {
         cell.selectionStyle = .none
         cell.nameLabel.text = category!.catName
         cell.photoImageView.image = category!.catImg
-        cell.numFreeventsLabel.text = "\(category!.freevents.count)\nFreevents"
+        cell.numFreeventsLabel.text = "\(category!.freevents.count)\nFreevent\(category!.freevents.count == 1 ? "" : "s")"
         
         // Calculate and display the number of upcoming freevents contained in the category
         let nUpcoming : Int = category!.calculateUpcoming()
