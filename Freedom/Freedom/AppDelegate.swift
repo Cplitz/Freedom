@@ -110,7 +110,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
             let freevent = Categories.getFreevent(withID: userInfo["id"] as! Int)
             let category = freevent?.freeCategory
             category?.freevents.remove(at: (category?.freevents.index(of: freevent!)!)!)
-            
+    
         default:
             break
         }
