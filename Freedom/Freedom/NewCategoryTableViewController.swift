@@ -79,7 +79,7 @@ class NewCategoryTableViewController: UITableViewController, UITextFieldDelegate
     //MARK: - Actions
     
     // When the icon cell is tapped, allow the user to select an image from their photo library
-    @IBAction func selectCustomImage(_ sender: UITapGestureRecognizer) {
+    @IBAction func selectCustomImage(_ sender: Any) {
         // Hide keyboards if user taps the image view while using the keyboard and update the save button state
         nameTextField.resignFirstResponder()
         updateSaveButtonState()

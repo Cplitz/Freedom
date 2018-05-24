@@ -118,7 +118,7 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
     //MARK: - Actions
     
     // When the icon cell is tapped, allow the user to select an image from their photo library
-    @IBAction func selectCustomImage(_ sender: UITapGestureRecognizer) {
+    @IBAction func selectCustomImage(_ sender: Any) {
         // Hide keyboards if user taps the image view while using the keyboard and updates save button state
         nameTextField.resignFirstResponder()
         notesTextView.resignFirstResponder()
@@ -171,16 +171,21 @@ class NewFreeventTableViewController: UITableViewController, UITextViewDelegate,
     
     //MARK: - Image Picker Controller Delegate
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        // Remove the ImagePickerView if the user cancelled
         dismiss(animated: true, completion: nil)
     }
     
     // Retrieve the selected image and assign it to the photoImageView
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        // Try retrieve the image selected from the user's camera roll
         guard let selectedImage = info[UIImagePickerControllerOriginalImage] as? UIImage else {
             fatalError("Expected a dictionary containing an image, but was provided the following: \(info)")
         }
         
+        // Set the photoImageView image (icon TableView row)
         photoImageView.image = selectedImage
+        
+        // Remove the ImagePickerView when done
         dismiss(animated: true, completion: nil)
     }
     
