@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:Freedom.xcodeproj">
+      location = "group:/Users/user137759/Desktop/Xcode apps/Freedom/Freedom/Freedom/Category.swift">
+   </FileRef>
+   <FileRef
+      location = "self:">
    </FileRef>
 </Workspace>
